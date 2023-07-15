@@ -30,11 +30,13 @@ const SignIn: NextPage = () => {
     const response = await axios.post('http://localhost:8080/signin', { 
       withCredentials: true 
     })
+    return response
   }
 
   const submit = () => {
     handleSubmit(async (data) => {
-      await signIn(data)
+      const res = await signIn(data)
+      console.log(res)
     }, () => {
       console.log('error')
     })()
