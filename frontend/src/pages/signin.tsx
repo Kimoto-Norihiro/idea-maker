@@ -9,6 +9,8 @@ import { useRouter } from 'next/router'
 import axios from 'axios'
 import { InputWithError } from '../components/InputWithError';
 import { HeaderWithBody } from '../components/layouts/HeaderWithBody';
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '@/firebase/firebase'
 
 const signInSchema = yup.object().shape({
   email: yup.string().email('invalid email').required('required input'),
@@ -26,17 +28,24 @@ const SignIn: NextPage = () => {
     resolver: yupResolver(signInSchema)
   });
 
-  const signIn = async (user: signInFormValues) => {
-    const response = await axios.post('http://localhost:8080/signin', { 
-      withCredentials: true 
-    })
-    return response
-  }
+  // const signIn = async (user: signInFormValues) => {
+  //   const response = await axios.post('http://localhost:8080/signin', { 
+  //     withCredentials: true 
+  //   })
+  //   return response
+  // }
 
   const submit = () => {
     handleSubmit(async (data) => {
-      const res = await signIn(data)
-      console.log(res)
+      console.log('submit')
+      const res = await signInWithEmailAndPassword(auth, data.email, data.password)
+      console.log(res.user.uid)
+      const token = await res.user.getIdToken()
+
+      localStorage.setItem('token', token)
+      console.log(token)
+      // const res = await signIn(data)
+      // console.log(res)
     }, () => {
       console.log('error')
     })()

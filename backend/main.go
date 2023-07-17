@@ -1,8 +1,9 @@
 package main
 
 import (
-  "github.com/gin-gonic/gin"
-  "github.com/gin-contrib/cors"
+	"github.com/Kimoto-Norihiro/idea-maker/middleware"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -25,6 +26,16 @@ func main() {
       "message": "pong",
     })
   })
+
+  authTest := r.Group("/auth")
+  authTest.Use(middleware.Auth())
+  {
+    authTest.GET("/", func(c *gin.Context) {
+      c.JSON(200, gin.H{
+        "message": "pong",
+      })
+    })
+  }
 
   r.Run(":8080")
 }
