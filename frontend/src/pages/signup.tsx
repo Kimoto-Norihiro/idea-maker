@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import type { NextPage } from 'next'
 import Link from 'next/link'
-import { useForm } from 'react-hook-form'
+import { set, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { User } from '@/types/types'
@@ -9,6 +9,8 @@ import { useRouter } from 'next/router'
 import axios from 'axios'
 import { InputWithError } from '@/components/InputWithError'
 import { HeaderWithBody } from '../components/layouts/HeaderWithBody';
+import { auth } from '@/firebase/firebase'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 
 const signUpSchema = yup.object().shape({
   name: yup.string().required('required input'),
@@ -25,22 +27,37 @@ const SignUp: NextPage = () => {
     resolver: yupResolver(signUpSchema)
   })
 
-  const signUp = async (user: SignUpFormValues) => {
-    const response = await axios.post('http://localhost:8080/signup', {
-      withCredentials: true,
-    })
-    console.log(response.data)
-    return response.data
+  const createUser = async (user: SignUpFormValues) => {
+    try {
+      const response = await axios.post('http://localhost:8080/user', user, {
+        headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
+        withCredentials: true,
+      })
+      console.log(response)
+    } catch (err: any) {
+      setErr(err.message)
+      console.log(err)
+    }
+  }
+
+  const createFirebaseUser = async (email: string, password: string) => {
+    try  {
+      const { user } = await createUserWithEmailAndPassword(auth, email, password)
+      const token = await user.getIdToken()
+      localStorage.setItem('token', token)
+      return user.uid
+
+    } catch (err: any) {
+      setErr(err.message)
+      return null
+    }
   }
 
   const submit = () => {
     handleSubmit(async (data) => {
-      const { result, message } = await signUp(data)
-      if (result) {
-        router.push('/signin')
-      } else {
-        setErr(message)
-      }
+      const uid = await createFirebaseUser(data.email, data.password)
+      console.log(uid)
+      if (uid) await createUser(data)
     }, () => {
       console.log('error')
     })()
