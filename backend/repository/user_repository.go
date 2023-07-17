@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"gorm.io/gorm"
 
 	"github.com/Kimoto-Norihiro/idea-maker/model"
@@ -19,6 +21,7 @@ func (mr *UserRepository) CreateUser(m model.User) error {
 }
 
 func (mr *UserRepository) ShowUser(uid string) (model.User, error) {
+	fmt.Printf("ShowUserRepository")
 	var m model.User
 	err := mr.db.Where("uid = ?", uid).First(&m).Error
 	return m, err

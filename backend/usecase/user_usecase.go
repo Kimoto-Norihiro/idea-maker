@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 
@@ -28,5 +30,6 @@ func (mu *UserUseCase) CreateUser(c *gin.Context, m model.User) error {
 }
 
 func (mu *UserUseCase) ShowUser(c *gin.Context, uid string) (model.User, error) {
+	fmt.Printf("ShowUserUseCase")
 	return mu.repository.ShowUser(uid)
 }

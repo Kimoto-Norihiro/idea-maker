@@ -51,8 +51,10 @@ func (mh *UserHandler) CreateUser(c *gin.Context) {
 }
 
 func (mh *UserHandler) ShowUser(c *gin.Context) {
+	fmt.Printf("ShowUserHandler")
 	uid, exist := c.Get("uid")
 	if !exist {
+		fmt.Errorf("uid is not exist")
 		c.JSON(400, gin.H{
 			"data":  nil,
 			"error": "uid is not exist",
@@ -62,6 +64,7 @@ func (mh *UserHandler) ShowUser(c *gin.Context) {
 
 	m, err := mh.useCase.ShowUser(c, uid.(string))
 	if err != nil {
+		fmt.Println(err.Error())
 		c.JSON(500, gin.H{
 			"data":  nil,
 			"error": err.Error(),
