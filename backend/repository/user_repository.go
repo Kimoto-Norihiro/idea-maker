@@ -1,0 +1,28 @@
+package repository
+
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+
+	"github.com/Kimoto-Norihiro/idea-maker/model"
+)
+
+type UserRepository struct {
+	db *gorm.DB
+}
+
+func NewUserRepository(db *gorm.DB) *UserRepository {
+	return &UserRepository{db}
+}
+
+func (mr *UserRepository) CreateUser(m model.User) error {
+	return mr.db.Create(&m).Error
+}
+
+func (mr *UserRepository) ShowUser(uid string) (model.User, error) {
+	fmt.Printf("ShowUserRepository")
+	var m model.User
+	err := mr.db.Where("uid = ?", uid).First(&m).Error
+	return m, err
+}

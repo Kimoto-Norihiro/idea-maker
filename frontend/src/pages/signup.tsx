@@ -18,7 +18,7 @@ const signUpSchema = yup.object().shape({
   password: yup.string().required('required input').min(8, 'at least 8 characters'),
 })
 
-export type SignUpFormValues = Omit<User, 'id'>
+export type SignUpFormValues = Omit<User, 'uid'>
 
 const SignUp: NextPage = () => {
   const [err, setErr] = useState('')
@@ -29,14 +29,17 @@ const SignUp: NextPage = () => {
 
   const createUser = async (user: SignUpFormValues) => {
     try {
-      const response = await axios.post('http://localhost:8080/user', user, {
-        headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
+      const token = localStorage.getItem('token')
+      console.log("getToken", token)
+      const response = await axios.post('http://localhost:8080/v1/signup', user, {
+        headers: {'Authorization': `Bearer ${token}`},
         withCredentials: true,
       })
-      console.log(response)
+      return response
     } catch (err: any) {
       setErr(err.message)
       console.log(err)
+      return null
     }
   }
 
@@ -45,7 +48,8 @@ const SignUp: NextPage = () => {
       const { user } = await createUserWithEmailAndPassword(auth, email, password)
       const token = await user.getIdToken()
       localStorage.setItem('token', token)
-      return user.uid
+      console.log("setToken", token)
+      return user
 
     } catch (err: any) {
       setErr(err.message)
@@ -55,11 +59,16 @@ const SignUp: NextPage = () => {
 
   const submit = () => {
     handleSubmit(async (data) => {
-      const uid = await createFirebaseUser(data.email, data.password)
-      console.log(uid)
-      if (uid) await createUser(data)
+      const user = await createFirebaseUser(data.email, data.password)
+      if (user) {
+        const res = await createUser(data)
+        if (res) {
+          router.push('/signin')
+        }
+      }
     }, () => {
       console.log('error')
+      setErr('error')
     })()
   }
 

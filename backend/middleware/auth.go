@@ -2,6 +2,7 @@ package middleware
 
 import (
   "fmt"
+  "strings"
 
   "github.com/gin-gonic/gin"
 
@@ -13,6 +14,9 @@ func Auth() gin.HandlerFunc {
     fmt.Println("Auth middleware")
     // get token from header
     idToken := c.Request.Header.Get("Authorization")
+    // remove Bearer
+    idToken = strings.Replace(idToken, "Bearer ", "", 1)
+    fmt.Printf("idToken: %v\n", idToken)
     // init firebase app
     firebaseApp, err := firebase.InitFirebaseApp()
     if err != nil {
@@ -26,15 +30,16 @@ func Auth() gin.HandlerFunc {
     if err != nil {
       fmt.Errorf("error verifying ID token:", err)
       c.JSON(401, gin.H{
-        "message": "Unauthorized",
+        "message": err.Error(),
       })
     }
     if token == nil {
       fmt.Errorf("token is nil")
       c.JSON(401, gin.H{
-        "message": "Unauthorized",
+        "message": "invalid token",
       })
     }
+    fmt.Printf("Verified ID token: %v\n", token)
     // set uid to context
     c.Set("uid", token.UID)
 

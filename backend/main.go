@@ -1,40 +1,33 @@
 package main
 
 import (
-	"github.com/Kimoto-Norihiro/idea-maker/middleware"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
+	"github.com/Kimoto-Norihiro/idea-maker/database"
+	"github.com/Kimoto-Norihiro/idea-maker/handler"
+	"github.com/Kimoto-Norihiro/idea-maker/middleware"
+	"github.com/Kimoto-Norihiro/idea-maker/repository"
+	"github.com/Kimoto-Norihiro/idea-maker/usecase"
 )
 
 func main() {
-  config := cors.DefaultConfig()
-  config.AllowOrigins = []string{"http://localhost:3000"}
-  config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
-  config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
-  config.AllowCredentials = true
   r := gin.Default()
-  r.Use(cors.New(config))
+  r.Use(middleware.Cors())
 
-  r.POST("/signup", func(c *gin.Context) {
-    c.JSON(200, gin.H{
-      "message": "pong",
-    })
-  })
-
-  r.POST("/signin", func(c *gin.Context) {
-    c.JSON(200, gin.H{
-      "message": "pong",
-    })
-  })
-
-  authTest := r.Group("/auth")
-  authTest.Use(middleware.Auth())
+  v1 := r.Group("/v1")
   {
-    authTest.GET("/", func(c *gin.Context) {
-      c.JSON(200, gin.H{
-        "message": "pong",
-      })
-    })
+    const dns = "n000r111:password@tcp(localhost:3306)/idea_maker?charset=utf8mb4&parseTime=True&loc=Local"
+    db, err := database.NewMySql(dns)
+    if err != nil {
+      panic(err)
+    }
+    ur := repository.NewUserRepository(db)
+    uu := usecase.NewUserUseCase(ur)
+    uh := handler.NewUserHandler(uu)
+
+    v1.Use(middleware.Auth())
+    v1.POST("/signup", uh.CreateUser)
+    v1.GET("/signin", uh.ShowUser)
   }
 
   r.Run(":8080")

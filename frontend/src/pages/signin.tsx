@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import type { NextPage } from 'next'
-import { useForm } from 'react-hook-form'
+import { set, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { User } from '@/types/types'
@@ -28,26 +28,42 @@ const SignIn: NextPage = () => {
     resolver: yupResolver(signInSchema)
   });
 
-  // const signIn = async (user: signInFormValues) => {
-  //   const response = await axios.post('http://localhost:8080/signin', { 
-  //     withCredentials: true 
-  //   })
-  //   return response
+  const firebaseSignIn = async (data: signInFormValues) => {
+    try {
+      const response = await signInWithEmailAndPassword(auth, data.email, data.password)
+      const token = await response.user.getIdToken()
+      localStorage.setItem('token', token)
+      return response.user
+    } catch(err: any) {
+      setErr('error')
+      console.log("firebase SignIn", err.message)
+      return null
+    }
+  }
+
+  // const signIn = async (data: signInFormValues) => {
+  //   try {
+  //     const token = localStorage.getItem('token')
+  //     console.log("getToken", token)
+  //     const response = await axios.get('http://localhost:8080/v1/signin', {
+  //       headers: {'Authorization': `Bearer ${token}`},
+  //       withCredentials: true,
+  //     })
+  //     return response
+  //   } catch (err: any) {
+  //     setErr(err.message)
+  //   }
   // }
 
   const submit = () => {
     handleSubmit(async (data) => {
-      console.log('submit')
-      const res = await signInWithEmailAndPassword(auth, data.email, data.password)
-      console.log(res.user.uid)
-      const token = await res.user.getIdToken()
-
-      localStorage.setItem('token', token)
-      console.log(token)
-      // const res = await signIn(data)
-      // console.log(res)
+      const user = await firebaseSignIn(data)
+      if (user) {
+        router.push('/')
+      }
     }, () => {
       console.log('error')
+      setErr('error')
     })()
   }
 
