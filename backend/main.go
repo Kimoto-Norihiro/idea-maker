@@ -39,13 +39,13 @@ func main() {
   ir := repository.NewIdeaRepository(db)
   iu := usecase.NewIdeaUseCase(ir)
   ih := handler.NewIdeaHandler(iu)
-  r.POST("/idea", ih.CreateIdea)
+  r.POST("/idea/:theme_id", ih.CreateIdea)
 
   // element routes
   er := repository.NewElementRepository(db)
   eu := usecase.NewElementUseCase(er)
   eh := handler.NewElementHandler(eu)
-  r.POST("/element", eh.CreateElement)
+  r.POST("/element/:theme_id", eh.CreateElement)
 
   // can't use cors in this way
   // v1 := r.Group("/v1")
