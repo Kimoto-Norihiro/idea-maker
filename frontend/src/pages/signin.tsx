@@ -19,7 +19,6 @@ const signInSchema = yup.object().shape({
 
 type signInFormValues = Omit<User, 'name'>
 
-
 const SignIn: NextPage = () => {
   const router = useRouter()
   const [err, setErr] = useState('')

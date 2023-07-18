@@ -13,5 +13,13 @@ type IUserUseCase interface {
 
 type IThemeUseCase interface {
 	CreateTheme(c *gin.Context, m model.Theme) error
-	IndexTheme(c *gin.Context, uid string) ([]model.Theme, error)
+	ShowTheme(c *gin.Context, uid string, themeId uint) (model.Theme, error)
+}
+
+type IIdeaUseCase interface {
+	CreateIdea(c *gin.Context, m model.Idea) error
+}
+
+type IElementUseCase interface {
+	CreateElement(c *gin.Context, m model.Element) error
 }

@@ -27,6 +27,6 @@ func (mu *ThemeUseCase) CreateTheme(c *gin.Context, m model.Theme) error {
 	return mu.repository.CreateTheme(m)
 }
 
-func (mu *ThemeUseCase) IndexTheme(c *gin.Context, uid string) ([]model.Theme, error) {
-	return mu.repository.IndexTheme(uid)
+func (mu *ThemeUseCase) ShowTheme(c *gin.Context, uid string, themeId uint) (model.Theme, error) {
+	return mu.repository.ShowTheme(uid, themeId)
 }
