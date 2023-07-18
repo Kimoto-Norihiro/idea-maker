@@ -35,6 +35,18 @@ func main() {
   r.POST("/theme", th.CreateTheme)
   r.GET("/theme", th.IndexTheme)
 
+  // idea routes
+  ir := repository.NewIdeaRepository(db)
+  iu := usecase.NewIdeaUseCase(ir)
+  ih := handler.NewIdeaHandler(iu)
+  r.POST("/idea", ih.CreateIdea)
+
+  // element routes
+  er := repository.NewElementRepository(db)
+  eu := usecase.NewElementUseCase(er)
+  eh := handler.NewElementHandler(eu)
+  r.POST("/element", eh.CreateElement)
+
   // can't use cors in this way
   // v1 := r.Group("/v1")
   // user := v1.Group("/user")

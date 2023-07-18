@@ -13,3 +13,11 @@ type IThemeRepository interface {
 	CreateTheme(m model.Theme) error
 	IndexTheme(uid string) ([]model.Theme, error)
 }
+
+type IIdeaRepository interface {
+	CreateIdea(m model.Idea) error
+}
+
+type IElementRepository interface {
+	CreateElement(m model.Element) error
+}
