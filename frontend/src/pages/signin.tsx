@@ -33,6 +33,7 @@ const SignIn: NextPage = () => {
       const response = await signInWithEmailAndPassword(auth, data.email, data.password)
       const token = await response.user.getIdToken()
       localStorage.setItem('token', token)
+      console.log("setToken", token)
       return response.user
     } catch(err: any) {
       setErr('error')
@@ -40,20 +41,6 @@ const SignIn: NextPage = () => {
       return null
     }
   }
-
-  // const signIn = async (data: signInFormValues) => {
-  //   try {
-  //     const token = localStorage.getItem('token')
-  //     console.log("getToken", token)
-  //     const response = await axios.get('http://localhost:8080/v1/signin', {
-  //       headers: {'Authorization': `Bearer ${token}`},
-  //       withCredentials: true,
-  //     })
-  //     return response
-  //   } catch (err: any) {
-  //     setErr(err.message)
-  //   }
-  // }
 
   const submit = () => {
     handleSubmit(async (data) => {

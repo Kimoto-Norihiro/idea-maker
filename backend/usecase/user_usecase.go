@@ -11,11 +11,11 @@ import (
 )
 
 type UserUseCase struct {
-	repository repository.Repository
+	repository repository.IUserRepository
 	validate   *validator.Validate
 }
 
-func NewUserUseCase(r repository.Repository) *UserUseCase {
+func NewUserUseCase(r repository.IUserRepository) *UserUseCase {
 	return &UserUseCase{
 		repository: r,
 		validate:   validator.New(),

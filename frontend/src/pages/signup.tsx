@@ -31,7 +31,7 @@ const SignUp: NextPage = () => {
     try {
       const token = localStorage.getItem('token')
       console.log("getToken", token)
-      const response = await axios.post('http://localhost:8080/v1/signup', user, {
+      const response = await axios.post('http://localhost:8080/user', user, {
         headers: {'Authorization': `Bearer ${token}`},
         withCredentials: true,
       })

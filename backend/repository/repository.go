@@ -1,10 +1,15 @@
 package repository
 
 import (
-	"github.com/Kimoto-Norihiro/idea-maker/model"
+ "github.com/Kimoto-Norihiro/idea-maker/model"
 )
 
-type Repository interface {
+type IUserRepository interface {
 	CreateUser(m model.User) error
 	ShowUser(uid string) (model.User, error)
+}
+
+type IThemeRepository interface {
+	CreateTheme(m model.Theme) error
+	IndexTheme(uid string) ([]model.Theme, error)
 }
