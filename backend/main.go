@@ -33,7 +33,7 @@ func main() {
   tu := usecase.NewThemeUseCase(tr)
   th := handler.NewThemeHandler(tu)
   r.POST("/theme", th.CreateTheme)
-  r.GET("/theme", th.IndexTheme)
+  r.GET("/theme/:theme_id", th.ShowTheme)
 
   // idea routes
   ir := repository.NewIdeaRepository(db)
@@ -47,23 +47,5 @@ func main() {
   eh := handler.NewElementHandler(eu)
   r.POST("/element/:theme_id", eh.CreateElement)
 
-  // can't use cors in this way
-  // v1 := r.Group("/v1")
-  // user := v1.Group("/user")
-  // {
-  //   ur := repository.NewUserRepository(db)
-  //   uu := usecase.NewUserUseCase(ur)
-  //   uh := handler.NewUserHandler(uu)
-  //   user.POST("/", uh.CreateUser)
-  //   user.GET("/", uh.ShowUser)
-  // }
-  // theme := v1.Group("/theme")
-  // {
-  //   tr := repository.NewThemeRepository(db)
-  //   tu := usecase.NewThemeUseCase(tr)
-  //   th := handler.NewThemeHandler(tu)
-  //   theme.POST("/", th.CreateTheme)
-  //   theme.GET("/", th.IndexTheme)
-  // }
   r.Run(":8080")
 }

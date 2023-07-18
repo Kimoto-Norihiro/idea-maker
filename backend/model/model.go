@@ -20,7 +20,6 @@ type Element struct {
   gorm.Model
   Name    string `json:"name"`
   ThemeID uint   `json:"theme_id"`
-  Theme   Theme  `json:"theme" gorm:"foreignKey:ThemeID"`
 }
 
 type Theme struct {
@@ -29,12 +28,10 @@ type Theme struct {
   Ideas    []Idea    `json:"ideas" gorm:"foreignKey:ThemeID"`
   Elements []Element `json:"elements" gorm:"foreignKey:ThemeID"`
   UserUID  string    `json:"user_uid" gorm:"type:varchar(255)"`
-  User     User      `json:"user" gorm:"foreignKey:UserUID"`
 }
 
 type Idea struct {
   gorm.Model
   Name    string `json:"name"`
   ThemeID uint   `json:"theme_id"`
-  Theme   Theme  `json:"theme" gorm:"foreignKey:ThemeID"`
 }

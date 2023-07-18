@@ -11,7 +11,7 @@ type IUserRepository interface {
 
 type IThemeRepository interface {
 	CreateTheme(m model.Theme) error
-	IndexTheme(uid string) ([]model.Theme, error)
+	ShowTheme(uid string, themeId uint) (model.Theme, error)
 }
 
 type IIdeaRepository interface {

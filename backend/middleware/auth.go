@@ -11,12 +11,11 @@ import (
 
 func Auth() gin.HandlerFunc {
   return func(c *gin.Context) {
-    fmt.Println("Auth middleware")
     // get token from header
     idToken := c.Request.Header.Get("Authorization")
     // remove Bearer
     idToken = strings.Replace(idToken, "Bearer ", "", 1)
-    fmt.Printf("idToken: %v\n", idToken)
+    // fmt.Printf("idToken: %v\n", idToken)
     // init firebase app
     firebaseApp, err := firebase.InitFirebaseApp()
     if err != nil {
@@ -41,7 +40,7 @@ func Auth() gin.HandlerFunc {
       })
       return
     }
-    fmt.Printf("Verified ID token: %v\n", token)
+    // fmt.Printf("Verified ID token: %v\n", token)
     // set uid to context
     c.Set("uid", token.UID)
 

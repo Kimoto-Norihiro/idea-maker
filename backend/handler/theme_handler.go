@@ -44,7 +44,15 @@ func (th *ThemeHandler) CreateTheme(c *gin.Context) {
 	})
 }
 
-func (th *ThemeHandler) IndexTheme(c *gin.Context) {
+func (th *ThemeHandler) ShowTheme(c *gin.Context) {
+	themeId, err := getThemeID(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"data":  nil,
+			"error": err.Error(),
+		})
+		return
+	}
 	uid, exists := c.Get("uid")
 	if !exists {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -52,7 +60,7 @@ func (th *ThemeHandler) IndexTheme(c *gin.Context) {
 		})
 		return
 	}
-	m, err := th.useCase.IndexTheme(c, uid.(string))
+	m, err := th.useCase.ShowTheme(c, uid.(string), themeId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"data":  nil,

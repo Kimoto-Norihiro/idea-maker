@@ -18,8 +18,10 @@ func (tr *ThemeRepository) CreateTheme(m model.Theme) error {
 	return tr.db.Create(&m).Error
 }
 
-func (tr *ThemeRepository) IndexTheme(uid string) ([]model.Theme, error) {
-	var m []model.Theme
-	err := tr.db.Where("user_uid = ?", uid).Find(&m).Error
+func (tr *ThemeRepository) ShowTheme(uid string, themeId uint) (model.Theme, error) {
+	var m model.Theme
+
+	err := tr.db.Preload("Ideas").Preload("Elements").First(&m, themeId).Error
+	
 	return m, err
 }

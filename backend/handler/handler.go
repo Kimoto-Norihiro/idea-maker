@@ -11,7 +11,7 @@ type IUserHandler interface {
 
 type IThemeHandler interface {
 	CreateTheme(c *gin.Context)
-	IndexTheme(c *gin.Context)
+	ShowTheme(c *gin.Context)
 }
 
 type IIdeaHandler interface {
