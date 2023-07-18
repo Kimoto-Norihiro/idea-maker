@@ -2,7 +2,6 @@ package handler
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -11,21 +10,11 @@ import (
 )
 
 type UserHandler struct {
-	useCase usecase.UseCase
+	useCase usecase.IUserUseCase
 }
 
-func NewUserHandler(u usecase.UseCase) *UserHandler {
+func NewUserHandler(u usecase.IUserUseCase) *UserHandler {
 	return &UserHandler{u}
-}
-
-func getUintId(c *gin.Context) (uint, error) {
-	idStr := c.Param("id")
-	fmt.Print(idStr)
-	id, err := strconv.ParseUint(idStr, 10, 32)
-	if err != nil {
-		return 0, err
-	}
-	return uint(id), nil
 }
 
 func (mh *UserHandler) CreateUser(c *gin.Context) {

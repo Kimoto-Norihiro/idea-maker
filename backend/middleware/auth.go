@@ -32,12 +32,14 @@ func Auth() gin.HandlerFunc {
       c.JSON(401, gin.H{
         "message": err.Error(),
       })
+      return
     }
     if token == nil {
       fmt.Errorf("token is nil")
       c.JSON(401, gin.H{
         "message": "invalid token",
       })
+      return
     }
     fmt.Printf("Verified ID token: %v\n", token)
     // set uid to context
