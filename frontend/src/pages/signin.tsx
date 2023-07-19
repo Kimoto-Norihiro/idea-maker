@@ -45,7 +45,7 @@ const SignIn: NextPage = () => {
     handleSubmit(async (data) => {
       const user = await firebaseSignIn(data)
       if (user) {
-        router.push('/')
+        router.push('/mypage')
       }
     }, () => {
       console.log('error')
