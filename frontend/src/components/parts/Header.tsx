@@ -2,8 +2,8 @@ import React from 'react'
 
 export const Header = () => {
   return (
-    <div className='bg-black flex items-center p-4'>
-      <p className='text-white font-bold text-3xl'>Header</p>
+    <div className='flex items-center h-[8vh]'>
+      <p className='text-3xl ml-4'>Idea Maker</p>
     </div>
   )
 }

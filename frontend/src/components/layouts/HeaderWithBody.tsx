@@ -7,9 +7,11 @@ type Props = {
 
 export const HeaderWithBody = ({children}: Props) => {
 	return (
-		<div>
+		<div className='h-[100vh]'>
 			<Header />
-			{ children }
+			<div className='h-[92vh]'>
+				{ children }
+			</div>
 		</div>
 	)
 }
