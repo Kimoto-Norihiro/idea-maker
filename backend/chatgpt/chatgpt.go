@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
-	// "os"
+	"os"
 )
 
 const openaiURL = "https://api.openai.com/v1/chat/completions"
@@ -15,7 +15,7 @@ const openaiURL = "https://api.openai.com/v1/chat/completions"
 var messages []Message
 
 func getUserRequest() {
-	apiKey := "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"
+	apiKey := os.Getenv("OPENAI_API_KEY")
 
 	var theme = "企業"
 	var elements = []string{
