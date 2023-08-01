@@ -1,7 +1,10 @@
 package main
 
 import (
+  "fmt"
+
 	"github.com/gin-gonic/gin"
+  "github.com/joho/godotenv"
 
 	"github.com/Kimoto-Norihiro/idea-maker/database"
 	"github.com/Kimoto-Norihiro/idea-maker/handler"
@@ -11,6 +14,11 @@ import (
 )
 
 func main() {
+  err := godotenv.Load(".env")
+	if err != nil {
+		fmt.Printf("fail to load env file: %v", err)
+	} 
+  
   r := gin.Default()
   r.Use(middleware.Cors())
   r.Use(middleware.Auth())
@@ -48,4 +56,11 @@ func main() {
   r.POST("/element/:theme_id", eh.CreateElement)
 
   r.Run(":8080")
+}
+
+func loadEnv() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		fmt.Printf("fail to load env file: %v", err)
+	} 
 }
