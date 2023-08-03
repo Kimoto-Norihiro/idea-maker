@@ -18,7 +18,7 @@ const signUpSchema = yup.object().shape({
   password: yup.string().required('required input').min(8, 'at least 8 characters'),
 })
 
-export type SignUpFormValues = Omit<User, 'uid'>
+export type SignUpFormValues = Pick<User, 'email' | 'name'> & {password: string}
 
 const SignUp: NextPage = () => {
   const [err, setErr] = useState('')
