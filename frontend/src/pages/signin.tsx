@@ -17,7 +17,7 @@ const signInSchema = yup.object().shape({
   password: yup.string().required('required input').min(8, 'at least 8 characters'),
 })
 
-type signInFormValues = Omit<User, 'name'>
+type signInFormValues = Pick<User, 'email'> & {password: string}
 
 const SignIn: NextPage = () => {
   const router = useRouter()
@@ -36,7 +36,7 @@ const SignIn: NextPage = () => {
       return response.user
     } catch(err: any) {
       setErr('error')
-      console.log("firebase SignIn", err.message)
+      console.log("firebase SignIn:", err.message)
       return null
     }
   }
