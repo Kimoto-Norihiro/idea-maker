@@ -26,3 +26,10 @@ func (mu *ElementUseCase) CreateElement(c *gin.Context, m model.Element) error {
 	}
 	return mu.repository.CreateElement(m)
 }
+
+func (mu *ElementUseCase) UpdateElement(c *gin.Context, m model.Element) error {
+	if err := mu.validate.Struct(m); err != nil {
+		return err
+	}
+	return mu.repository.UpdateElement(m)
+}

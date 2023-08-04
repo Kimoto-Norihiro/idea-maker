@@ -17,3 +17,7 @@ func NewElementRepository(db *gorm.DB) *ElementRepository {
 func (er *ElementRepository) CreateElement(m model.Element) error {
 	return er.db.Create(&m).Error
 }
+
+func (er *ElementRepository) UpdateElement(m model.Element) error {
+	return er.db.Save(&m).Error
+}

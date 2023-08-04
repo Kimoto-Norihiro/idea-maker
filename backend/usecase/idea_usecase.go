@@ -26,3 +26,10 @@ func (mu *IdeaUseCase) CreateIdea(c *gin.Context, m model.Idea) error {
 	}
 	return mu.repository.CreateIdea(m)
 }
+
+func (mu *IdeaUseCase) UpdateIdea(c *gin.Context, m model.Idea) error {
+	if err := mu.validate.Struct(m); err != nil {
+		return err
+	}
+	return mu.repository.UpdateIdea(m)
+}
