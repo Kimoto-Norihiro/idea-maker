@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { BsLightbulb } from 'react-icons/bs'
 import { GrFormAdd } from 'react-icons/gr'
-import { MdWorkspacesOutline } from 'react-icons/md'
 import { PiCards } from 'react-icons/pi'
 import { BiBrain } from 'react-icons/bi'
 import { Theme } from '@/types/types'
 import axios from 'axios'
-import { Idea } from '../../types/types';
+import { Idea, Element } from '../../types/types';
 
 type Props = {
 	themeId: string | null
@@ -14,7 +13,6 @@ type Props = {
 
 export const WorkSpace = ({ themeId }: Props) => {
 	const [presentTheme, setPresentTheme] = useState<Theme | null>(null)
-	console.log("theme", themeId)
 
 	const getTheme = async () => {
 		try {
@@ -68,7 +66,7 @@ export const WorkSpace = ({ themeId }: Props) => {
 	}
 
 	useEffect(() => {
-		getTheme()
+		if (themeId) getTheme()
 	}, [themeId])
 
 	if (!presentTheme) return (
@@ -82,8 +80,7 @@ export const WorkSpace = ({ themeId }: Props) => {
 	return (
 		<div className='w-[80vw] h-full border-gray-100 border-2'>
 			<div className='h-[4vh] w-[80vw] flex items-center pl-4 border-gray-100 border-b-2'>
-				<MdWorkspacesOutline/>
-				<p className='ml-4'>{presentTheme.name} workspace</p>
+				<p className=''>{presentTheme.name}</p>
 			</div>
 			<div className='flex h-[88vh] w-full'>
 				<div className='w-[40vw] h-[88vh] border-r-2 border-b-2 border-gray-100'>
@@ -106,11 +103,7 @@ export const WorkSpace = ({ themeId }: Props) => {
 								<p className="">element is nothing</p>
 							</div>
 						) : (
-							elements?.map((element, index) => (
-								<div key={index} className="h-[4vh] hover:bg-gray-200 flex items-center pl-4">
-									<p>{element.name}</p>
-								</div>
-							))
+							elements?.map((element, index) => <ElementCard key={index} element={element} refetch={getTheme}/>)
 						)
 					}
 				</div>
@@ -145,11 +138,7 @@ export const WorkSpace = ({ themeId }: Props) => {
 								<p className="">idea is nothing</p>
 							</div>
 						) : (
-							ideas?.map((idea, index) => (
-								<div key={index} className="h-[4vh] hover:bg-gray-200 flex items-center pl-4">
-									<p>{idea.name}</p>
-								</div>
-							))
+							ideas?.map((idea, index) => <IdeaCard key={index} idea={idea} refetch={getTheme} />)
 						)
 					}
 				</div>
@@ -159,3 +148,126 @@ export const WorkSpace = ({ themeId }: Props) => {
 }
 
 export default WorkSpace
+
+type ElementCardProps = {
+	element: Element
+	refetch: () => Promise<void>
+}
+
+const ElementCard = ({ element, refetch }: ElementCardProps) => {
+	const [isEdit, setIsEdit] = useState(false)
+	const [name, setName] = useState(element.name)
+
+	const editElement = async () => {
+		const newElement = {
+			...element,
+			name,
+		}
+		
+		try {
+			const token = localStorage.getItem('token')
+			const { data } = await axios.put('http://localhost:8080/element', newElement ,{
+				headers: {'Authorization': `Bearer ${token}`},
+				withCredentials: true,
+			})
+			console.log(data)
+			await refetch()
+			setIsEdit(false)
+		} catch (err: any) {
+			console.log(err)
+		}
+	}
+
+	const onEnterDown = (e: React.KeyboardEvent) => {
+		if (e.key == "Enter") editElement()
+	}
+
+	useEffect(() => {
+		if (!isEdit) setName(element.name)
+	}, [isEdit])
+
+	return (
+		<div className="h-[4vh] hover:bg-gray-100 flex items-center pl-4">
+			{
+				isEdit ? (
+					<input 
+						className='rounded-sm px-1' 
+						value={name} 
+						onChange={(e) => setName(e.target.value)}
+						onKeyDown={onEnterDown}
+						onBlur={() => setIsEdit(false)}
+					/>
+				) : (
+					<p 
+						className='hover:bg-gray-300 rounded-sm px-1'
+						onClick={() => setIsEdit(true)}
+					>
+						{element.name}
+					</p>
+				)
+			}
+		</div>
+	)
+}
+
+type IdeaCardProps = {
+	idea: Idea
+	refetch: () => Promise<void>
+}
+
+const IdeaCard = ({ idea, refetch }: IdeaCardProps) => {
+	const [isEdit, setIsEdit] = useState(false)
+	const [name, setName] = useState(idea.name)
+
+	const editIdea = async () => {
+		const newIdea = {
+			...idea,
+			name,
+		}
+		
+		try {
+			const token = localStorage.getItem('token')
+			const { data } = await axios.put('http://localhost:8080/idea', newIdea ,{
+				headers: {'Authorization': `Bearer ${token}`},
+				withCredentials: true,
+			})
+			await refetch()
+			setIsEdit(false)
+		} catch (err: any) {
+			console.log(err)
+		}
+	}
+
+	const onEnterDown = (e: React.KeyboardEvent) => {
+		if (e.key == "Enter") editIdea()
+	}
+
+	useEffect(() => {
+		if (!isEdit) setName(idea.name)
+	}, [isEdit])
+
+	return (
+		<div className="h-[4vh] hover:bg-gray-100 flex items-center pl-4">
+			{
+				isEdit ? (
+					<input 
+						className='rounded-sm px-1' 
+						value={name} 
+						onChange={(e) => setName(e.target.value)}
+						onKeyDown={onEnterDown}
+						onBlur={() => {
+							setIsEdit(false)
+						}}
+					/>
+				) : (
+					<p 
+						className='hover:bg-gray-300 rounded-sm px-1'
+						onClick={() => setIsEdit(true)}
+					>
+						{idea.name}
+					</p>
+				)
+			}
+		</div>
+	)
+}
