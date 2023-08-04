@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 
@@ -28,14 +29,6 @@ func getThemeID(c *gin.Context) (uint, error) {
 }
 
 func (ih *IdeaHandler) CreateIdea(c *gin.Context) {
-	ThemeID, err := getThemeID(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	
 	var m model.Idea
 	if err := c.BindJSON(&m); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -43,7 +36,7 @@ func (ih *IdeaHandler) CreateIdea(c *gin.Context) {
 		})
 		return
 	}
-	m.ThemeID = ThemeID
+	m.Name = "New Idea"
 
 	if err := ih.usecase.CreateIdea(c, m); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

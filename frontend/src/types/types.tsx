@@ -17,17 +17,17 @@ export type Theme = GormModel & {
 
 export type Idea = GormModel & {
   name:    string
-  ThemeID: string
+  theme_id: string
 }
 
 export type Element = GormModel & {
   name:    string
-  themeID: string
+  theme_id: string
 }
 
 type GormModel = {
   createdAt: Date
   updatedAt: Date
   deletedAt: Date
-  id:        string       
+  ID:        string       
 }
