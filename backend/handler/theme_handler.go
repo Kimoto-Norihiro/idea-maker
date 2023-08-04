@@ -39,6 +39,26 @@ func (th *ThemeHandler) CreateTheme(c *gin.Context) {
 	})
 }
 
+func (th *ThemeHandler) UpdateTheme(c *gin.Context) {
+	var m model.Theme
+	if err := c.BindJSON(&m); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if err := th.useCase.UpdateTheme(c, m); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"error": nil,
+	})
+}
+
 func (th *ThemeHandler) ShowTheme(c *gin.Context) {
 	themeId, err := getThemeID(c)
 	if err != nil {

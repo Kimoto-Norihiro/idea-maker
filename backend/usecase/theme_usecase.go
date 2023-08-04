@@ -27,6 +27,13 @@ func (mu *ThemeUseCase) CreateTheme(c *gin.Context, m model.Theme) error {
 	return mu.repository.CreateTheme(m)
 }
 
+func (mu *ThemeUseCase) UpdateTheme(c *gin.Context, m model.Theme) error {
+	if err := mu.validate.Struct(m); err != nil {
+		return err
+	}
+	return mu.repository.UpdateTheme(m)
+}
+
 func (mu *ThemeUseCase) ShowTheme(c *gin.Context, uid string, themeId uint) (model.Theme, error) {
 	return mu.repository.ShowTheme(uid, themeId)
 }

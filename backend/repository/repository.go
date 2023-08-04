@@ -11,13 +11,16 @@ type IUserRepository interface {
 
 type IThemeRepository interface {
 	CreateTheme(m model.Theme) error
+	UpdateTheme(m model.Theme) error
 	ShowTheme(uid string, themeId uint) (model.Theme, error)
 }
 
 type IIdeaRepository interface {
 	CreateIdea(m model.Idea) error
+	UpdateIdea(m model.Idea) error
 }
 
 type IElementRepository interface {
 	CreateElement(m model.Element) error
+	UpdateElement(m model.Element) error
 }

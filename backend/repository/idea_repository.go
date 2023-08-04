@@ -17,3 +17,7 @@ func NewIdeaRepository(db *gorm.DB) *IdeaRepository {
 func (ir *IdeaRepository) CreateIdea(m model.Idea) error {
 	return ir.db.Create(&m).Error
 }
+
+func (ir *IdeaRepository) UpdateIdea(m model.Idea) error {
+	return ir.db.Save(&m).Error
+}
