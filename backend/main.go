@@ -42,18 +42,21 @@ func main() {
   th := handler.NewThemeHandler(tu)
   r.POST("/theme", th.CreateTheme)
   r.GET("/theme/:theme_id", th.ShowTheme)
+  r.PUT("/theme", th.UpdateTheme)
 
   // idea routes
   ir := repository.NewIdeaRepository(db)
   iu := usecase.NewIdeaUseCase(ir)
   ih := handler.NewIdeaHandler(iu)
   r.POST("/idea", ih.CreateIdea)
+  r.PUT("/idea", ih.UpdateIdea)
 
   // element routes
   er := repository.NewElementRepository(db)
   eu := usecase.NewElementUseCase(er)
   eh := handler.NewElementHandler(eu)
   r.POST("/element", eh.CreateElement)
+  r.PUT("/element", eh.UpdateElement)
 
   r.Run(":8080")
 }

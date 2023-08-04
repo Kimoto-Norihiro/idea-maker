@@ -5,19 +5,18 @@ import { BsPerson } from 'react-icons/bs'
 import { GrFormAdd } from 'react-icons/gr'
 import { TfiMore } from 'react-icons/tfi'
 import axios from 'axios'
-import { User } from '@/types/types'
+import { Theme, User } from '@/types/types'
 import WorkSpace from '../components/mypage/WorkSpace';
 import { useRouter } from 'next/router'
 
 const MyPage: NextPage = () => {
-	const router = useRouter()
+	// const router = useRouter()
 	const [presentThemeId, setPresentThemeId] = useState<string | null>(null)
 	const [currentUser, setCurrentUser] = useState<User | null>(null)
 
 	const getUser = async () => {
 		try {
 			const token = localStorage.getItem('token')
-			console.log("get user token", token)
 			const { data } = await axios.get('http://localhost:8080/user', {
 				headers: {'Authorization': `Bearer ${token}`},
 				withCredentials: true,
@@ -44,8 +43,6 @@ const MyPage: NextPage = () => {
 	}
 
 	useEffect(() => {
-		const token = localStorage.getItem('token')
-		if (!token) router.push('/signin')
 		getUser()
 	}, [])
 
@@ -69,14 +66,7 @@ const MyPage: NextPage = () => {
 						</div>
 						{
 							currentUser?.themes?.map((theme, index) => (
-								<div key={index} className="h-[4vh] hover:bg-gray-200 flex items-center justify-between px-4 group" 
-									onClick={() => setPresentThemeId(theme.ID)}
-								>
-									<p className="">{theme.name}</p>
-									<div className='invisible group-hover:visible p-1 hover:bg-gray-300 rounded-md'>
-										<TfiMore/>
-									</div>
-								</div>
+								<ThemeCard key={index} theme={theme} getUser={getUser} setPresentThemeId={setPresentThemeId} />
 							))
 						}
 					</div>
@@ -88,3 +78,83 @@ const MyPage: NextPage = () => {
 }
 
 export default MyPage
+
+type ThemeCardProps = {
+	theme: Theme
+	getUser: () => Promise<void>
+	setPresentThemeId: React.Dispatch<React.SetStateAction<string | null>>
+}
+
+const ThemeCard = ({ theme, getUser, setPresentThemeId }: ThemeCardProps) => {
+	const [isEdit, setIsEdit] = useState(false)
+	const [name, setName] = useState(theme.name)
+
+	const editTheme = async () => {
+		const newTheme = {
+			...theme,
+			name,
+		}
+		
+		try {
+			const token = localStorage.getItem('token')
+			const { data } = await axios.put('http://localhost:8080/theme', newTheme ,{
+				headers: {'Authorization': `Bearer ${token}`},
+				withCredentials: true,
+			})
+			await getUser()
+			setIsEdit(false)
+		} catch (err: any) {
+			console.log(err)
+		}
+	}
+
+	const onEnterDown = async (e: React.KeyboardEvent) => {
+		if (e.key == "Enter") editTheme()
+	}
+
+	useEffect(() => {
+		if (!isEdit) setName(theme.name)
+	}, [isEdit])
+
+	return (
+		<div className="">
+			{
+				isEdit ? (
+					<div className="h-[4vh] w-full flex items-center px-4">
+						<input 
+							className='rounded-sm px-1' 
+							value={name} 
+							onChange={(e) => setName(e.target.value)}
+							onKeyDown={onEnterDown}
+							onBlur={() => {
+								setIsEdit(false)
+							}}
+						/>
+					</div>
+					
+				) : (
+					<div 
+						className="h-[4vh] w-full hover:bg-gray-100 flex items-center justify-between px-4 group" 
+						onClick={() => setPresentThemeId(theme.ID)}
+					>
+						<p 
+							className='hover:bg-gray-300 rounded-sm px-1'
+							onClick={() => setIsEdit(true)}
+						>
+							{theme.name}
+						</p>
+						<div 
+							className='invisible group-hover:visible p-1 hover:bg-gray-300 rounded-md'
+							onClick={(e) => {
+								e.stopPropagation()
+								console.log('more')
+							}}
+						>
+							<TfiMore/>
+						</div>
+					</div>
+				)
+			}
+		</div>
+	)
+}
