@@ -5,18 +5,19 @@ import { BsPerson } from 'react-icons/bs'
 import { GrFormAdd } from 'react-icons/gr'
 import { TfiMore } from 'react-icons/tfi'
 import axios from 'axios'
-import { Theme, User } from '@/types/types'
+import { User } from '@/types/types'
 import WorkSpace from '../components/mypage/WorkSpace';
 import { useRouter } from 'next/router'
 
 const MyPage: NextPage = () => {
 	const router = useRouter()
-	const [presentTheme, setPresentTheme] = useState<Theme | null>(null)
+	const [presentThemeId, setPresentThemeId] = useState<string | null>(null)
 	const [currentUser, setCurrentUser] = useState<User | null>(null)
 
 	const getUser = async () => {
 		try {
 			const token = localStorage.getItem('token')
+			console.log("get user token", token)
 			const { data } = await axios.get('http://localhost:8080/user', {
 				headers: {'Authorization': `Bearer ${token}`},
 				withCredentials: true,
@@ -24,6 +25,21 @@ const MyPage: NextPage = () => {
 			setCurrentUser(data.data)
 		} catch (err: any) {
 			console.log(err)
+		}
+	}
+
+	const createTheme = async () => {
+		try {
+			const token = localStorage.getItem('token')
+			console.log("create theme token", token)
+			const { data } = await axios.post('http://localhost:8080/theme', undefined, {
+				headers: {'Authorization': `Bearer ${token}`},
+				withCredentials: true,
+			})
+			console.log(data)
+			await getUser()
+		} catch (err: any) {
+			console.log("create theme:", err)
 		}
 	}
 
@@ -43,7 +59,10 @@ const MyPage: NextPage = () => {
 					</div>
 					<div className=''>
 						<div className="flex h-[4vh] pl-3 items-center">
-							<div className='hover:bg-gray-200 flex items-center p-1 rounded-md'>
+							<div 
+								className='hover:bg-gray-200 flex items-center p-1 rounded-md'
+								onClick={createTheme}	
+							>
 								<GrFormAdd/>
 							</div>
 							<p className='ml-3'>add theme</p>
@@ -51,7 +70,7 @@ const MyPage: NextPage = () => {
 						{
 							currentUser?.themes?.map((theme, index) => (
 								<div key={index} className="h-[4vh] hover:bg-gray-200 flex items-center justify-between px-4 group" 
-									onClick={() => setPresentTheme(theme)}
+									onClick={() => setPresentThemeId(theme.ID)}
 								>
 									<p className="">{theme.name}</p>
 									<div className='invisible group-hover:visible p-1 hover:bg-gray-300 rounded-md'>
@@ -62,7 +81,7 @@ const MyPage: NextPage = () => {
 						}
 					</div>
 				</div>
-				<WorkSpace theme={presentTheme}/>
+				<WorkSpace themeId={presentThemeId}/>
 			</div>
 		</HeaderWithBody>
 	)

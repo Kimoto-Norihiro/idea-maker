@@ -6,25 +6,84 @@ import { PiCards } from 'react-icons/pi'
 import { BiBrain } from 'react-icons/bi'
 import { Theme } from '@/types/types'
 import axios from 'axios'
+import { Idea } from '../../types/types';
 
 type Props = {
-	theme: Theme | null
+	themeId: string | null
 }
 
-export const WorkSpace = ({ theme }: Props) => {
-	if (!theme) return (
+export const WorkSpace = ({ themeId }: Props) => {
+	const [presentTheme, setPresentTheme] = useState<Theme | null>(null)
+	console.log("theme", themeId)
+
+	const getTheme = async () => {
+		try {
+			const token = localStorage.getItem('token')
+			const { data } = await axios.get(`http://localhost:8080/theme/${themeId}`, {
+				headers: {'Authorization': `Bearer ${token}`},
+				withCredentials: true,
+			})
+			console.log("get theme", data)
+			setPresentTheme(data.data)
+		} catch (err: any) {
+			console.log(err)
+		}
+	}
+
+	const createElement = async (themeId: string) => {
+		try {
+			const token = localStorage.getItem('token')
+			const { data } = await axios.post('http://localhost:8080/element', {"theme_id": themeId}, {
+				headers: {'Authorization': `Bearer ${token}`},
+				withCredentials: true,
+			})
+			console.log(data)
+			await getTheme()
+		} catch (err: any) {
+			console.log(err)
+		}
+	}
+
+	const createIdea = async (themeId: string) => {
+		console.log(themeId)
+		const idea = {
+			theme_id: themeId,
+		} as Idea
+
+		try {
+			const token = localStorage.getItem('token')
+			const { data } = await axios.post('http://localhost:8080/idea', idea ,{
+				headers: {'Authorization': `Bearer ${token}`},
+				withCredentials: true,
+			})
+			console.log(data)
+			await getTheme()
+		} catch (err: any) {
+			console.log(err)
+		}
+	}
+
+	const generateIdea = async () => {
+		console.log('generate idea')
+	}
+
+	useEffect(() => {
+		getTheme()
+	}, [themeId])
+
+	if (!presentTheme) return (
 		<div className='w-[80vw] h-full border-gray-100 border-2 items-center flex justify-center text-gray-500'>
 			Theme is not selected
 		</div>
 	)
 
-	const { elements, ideas } = theme
+	const { elements, ideas } = presentTheme
 
 	return (
 		<div className='w-[80vw] h-full border-gray-100 border-2'>
 			<div className='h-[4vh] w-[80vw] flex items-center pl-4 border-gray-100 border-b-2'>
 				<MdWorkspacesOutline/>
-				<p className='ml-4'>{theme.name} workspace</p>
+				<p className='ml-4'>{presentTheme.name} workspace</p>
 			</div>
 			<div className='flex h-[88vh] w-full'>
 				<div className='w-[40vw] h-[88vh] border-r-2 border-b-2 border-gray-100'>
@@ -35,7 +94,7 @@ export const WorkSpace = ({ theme }: Props) => {
 					<div className="flex h-[4vh] pl-3 items-center">
 						<div 
 							className='hover:bg-gray-200 flex items-center p-1 rounded-md'
-							onClick={() => console.log('add element')}
+							onClick={() => createElement(presentTheme.ID)}
 						>
 							<GrFormAdd/>
 						</div>
@@ -64,7 +123,7 @@ export const WorkSpace = ({ theme }: Props) => {
 						<div className="flex h-[4vh] w-[20vw] pl-3 items-center">
 							<div 
 								className='hover:bg-gray-200 flex items-center p-1 rounded-md'
-								onClick={() => console.log('add idea')}
+								onClick={() => createIdea(presentTheme.ID)}
 							>
 								<GrFormAdd/>
 							</div>
@@ -73,7 +132,7 @@ export const WorkSpace = ({ theme }: Props) => {
 						<div className="flex h-[4vh] w-[20vw] pl-3 items-center">
 							<div 
 								className='hover:bg-gray-200 flex items-center p-1 rounded-md'
-								onClick={() => console.log('generate idea')}
+								onClick={generateIdea}
 							>
 								<BiBrain/>
 							</div>

@@ -47,13 +47,13 @@ func main() {
   ir := repository.NewIdeaRepository(db)
   iu := usecase.NewIdeaUseCase(ir)
   ih := handler.NewIdeaHandler(iu)
-  r.POST("/idea/:theme_id", ih.CreateIdea)
+  r.POST("/idea", ih.CreateIdea)
 
   // element routes
   er := repository.NewElementRepository(db)
   eu := usecase.NewElementUseCase(er)
   eh := handler.NewElementHandler(eu)
-  r.POST("/element/:theme_id", eh.CreateElement)
+  r.POST("/element", eh.CreateElement)
 
   r.Run(":8080")
 }

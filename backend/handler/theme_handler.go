@@ -27,12 +27,7 @@ func (th *ThemeHandler) CreateTheme(c *gin.Context) {
 	}
 	var m model.Theme
 	m.UserUID = uid.(string)
-	if err := c.BindJSON(&m); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
+	m.Name = "New Theme"
 	if err := th.useCase.CreateTheme(c, m); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),

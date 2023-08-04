@@ -18,14 +18,6 @@ func NewElementHandler(u usecase.IElementUseCase) *ElementHandler {
 }
 
 func (ih *ElementHandler) CreateElement(c *gin.Context) {
-	ThemeID, err := getThemeID(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	
 	var m model.Element
 	if err := c.BindJSON(&m); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -33,7 +25,7 @@ func (ih *ElementHandler) CreateElement(c *gin.Context) {
 		})
 		return
 	}
-	m.ThemeID = ThemeID
+	m.Name = "New Element"
 
 	if err := ih.usecase.CreateElement(c, m); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
