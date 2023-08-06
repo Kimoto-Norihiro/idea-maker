@@ -33,3 +33,10 @@ func (mu *ElementUseCase) UpdateElement(c *gin.Context, m model.Element) error {
 	}
 	return mu.repository.UpdateElement(m)
 }
+
+func (um *ElementUseCase) DeleteElement(c *gin.Context, m model.Element) error {
+	if err := um.validate.Struct(m); err != nil {
+		return err
+	}
+	return um.repository.DeleteElement(m)
+}

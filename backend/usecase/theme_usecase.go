@@ -37,3 +37,10 @@ func (mu *ThemeUseCase) UpdateTheme(c *gin.Context, m model.Theme) error {
 func (mu *ThemeUseCase) ShowTheme(c *gin.Context, uid string, themeId uint) (model.Theme, error) {
 	return mu.repository.ShowTheme(uid, themeId)
 }
+
+func (mu *ThemeUseCase) DeleteTheme(c *gin.Context, m model.Theme) error {
+	if err := mu.validate.Struct(m); err != nil {
+		return err
+	}
+	return mu.repository.DeleteTheme(m)
+}

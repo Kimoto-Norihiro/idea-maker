@@ -88,3 +88,23 @@ func (th *ThemeHandler) ShowTheme(c *gin.Context) {
 		"error": nil,
 	})
 }
+
+func (th *ThemeHandler) DeleteTheme(c *gin.Context) {
+	var m model.Theme
+	if err := c.BindJSON(&m); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if err := th.useCase.DeleteTheme(c, m); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"error": nil,
+	})
+}

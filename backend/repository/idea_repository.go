@@ -21,3 +21,7 @@ func (ir *IdeaRepository) CreateIdea(m model.Idea) error {
 func (ir *IdeaRepository) UpdateIdea(m model.Idea) error {
 	return ir.db.Save(&m).Error
 }
+
+func (ir *IdeaRepository) DeleteIdea(m model.Idea) error {
+	return ir.db.Delete(&m).Error
+}

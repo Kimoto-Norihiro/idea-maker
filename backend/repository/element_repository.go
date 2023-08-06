@@ -21,3 +21,7 @@ func (er *ElementRepository) CreateElement(m model.Element) error {
 func (er *ElementRepository) UpdateElement(m model.Element) error {
 	return er.db.Save(&m).Error
 }
+
+func (er *ElementRepository) DeleteElement(m model.Element) error {
+	return er.db.Delete(&m).Error
+}

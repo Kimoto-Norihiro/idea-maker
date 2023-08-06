@@ -1,23 +1,18 @@
 package main
 
 import (
-  "fmt"
-
 	"github.com/gin-gonic/gin"
-  "github.com/joho/godotenv"
-
+  
 	"github.com/Kimoto-Norihiro/idea-maker/database"
 	"github.com/Kimoto-Norihiro/idea-maker/handler"
 	"github.com/Kimoto-Norihiro/idea-maker/middleware"
 	"github.com/Kimoto-Norihiro/idea-maker/repository"
 	"github.com/Kimoto-Norihiro/idea-maker/usecase"
+  "github.com/Kimoto-Norihiro/idea-maker/utils"
 )
 
 func main() {
-  err := godotenv.Load(".env")
-	if err != nil {
-		fmt.Printf("fail to load env file: %v", err)
-	} 
+  utils.LoadEnv()
   
   r := gin.Default()
   r.Use(middleware.Cors())
@@ -43,6 +38,7 @@ func main() {
   r.POST("/theme", th.CreateTheme)
   r.GET("/theme/:theme_id", th.ShowTheme)
   r.PUT("/theme", th.UpdateTheme)
+  r.DELETE("/theme", th.DeleteTheme)
 
   // idea routes
   ir := repository.NewIdeaRepository(db)
@@ -50,6 +46,7 @@ func main() {
   ih := handler.NewIdeaHandler(iu)
   r.POST("/idea", ih.CreateIdea)
   r.PUT("/idea", ih.UpdateIdea)
+  r.DELETE("/idea", ih.DeleteIdea)
 
   // element routes
   er := repository.NewElementRepository(db)
@@ -57,13 +54,7 @@ func main() {
   eh := handler.NewElementHandler(eu)
   r.POST("/element", eh.CreateElement)
   r.PUT("/element", eh.UpdateElement)
+  r.DELETE("/element", eh.DeleteElement)
 
   r.Run(":8080")
-}
-
-func loadEnv() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		fmt.Printf("fail to load env file: %v", err)
-	} 
 }

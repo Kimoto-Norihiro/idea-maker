@@ -7,10 +7,8 @@ import { TfiMore } from 'react-icons/tfi'
 import axios from 'axios'
 import { Theme, User } from '@/types/types'
 import WorkSpace from '../components/mypage/WorkSpace';
-import { useRouter } from 'next/router'
 
 const MyPage: NextPage = () => {
-	// const router = useRouter()
 	const [presentThemeId, setPresentThemeId] = useState<string | null>(null)
 	const [currentUser, setCurrentUser] = useState<User | null>(null)
 

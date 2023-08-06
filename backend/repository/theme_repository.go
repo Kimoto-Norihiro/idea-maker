@@ -28,3 +28,7 @@ func (tr *ThemeRepository) ShowTheme(uid string, themeId uint) (model.Theme, err
 	
 	return m, err
 }
+
+func (tr *ThemeRepository) DeleteTheme(m model.Theme) error {
+	return tr.db.Delete(&m).Error
+}
