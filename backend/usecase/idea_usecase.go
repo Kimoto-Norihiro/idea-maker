@@ -33,3 +33,10 @@ func (mu *IdeaUseCase) UpdateIdea(c *gin.Context, m model.Idea) error {
 	}
 	return mu.repository.UpdateIdea(m)
 }
+
+func (mu *IdeaUseCase) DeleteIdea(c *gin.Context, m model.Idea) error {
+	if err := mu.validate.Struct(m); err != nil {
+		return err
+	}
+	return mu.repository.DeleteIdea(m)
+}

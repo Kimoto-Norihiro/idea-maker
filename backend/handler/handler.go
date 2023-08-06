@@ -13,14 +13,17 @@ type IThemeHandler interface {
 	CreateTheme(c *gin.Context)
 	UpdateTheme(c *gin.Context)
 	ShowTheme(c *gin.Context)
+	DeleteTheme(c *gin.Context)
 }
 
 type IIdeaHandler interface {
 	CreateIdea(c *gin.Context)
 	UpdateIdea(c *gin.Context)
+	DeleteIdea(c *gin.Context)
 }
 
 type IElementHandler interface {
 	CreateElement(c *gin.Context)
 	UpdateElement(c *gin.Context)
+	DeleteElement(c *gin.Context)
 }
